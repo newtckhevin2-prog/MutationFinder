@@ -1,0 +1,9 @@
+data/output/*
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+*.pyo
+.DS_Store
+thumbs.db
+*.csv
+*.txt
