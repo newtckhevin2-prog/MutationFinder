@@ -35,10 +35,10 @@ MutationFinder/
 │   └── InformeProyecto.docx
 │
 │── notebooks/
-│   └── Proyecto Final.ipynb
+│   └── Mutation_Finder_NB.ipynb   # Notebook actualizado
 │
 │── src/
-│   ├── mutationfinder.py
+│   ├── mutationfinder.py          # Código principal corregido
 │   └── __init__.py
 │
 │── tests/
