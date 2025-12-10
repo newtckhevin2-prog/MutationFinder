@@ -1,66 +1,47 @@
 # Paso 1: Función para cargar secuencia desde archivo FASTA
 
+import os
 import csv
 
 def load_fasta(file_path):
     """
-    Carga un archivo FASTA y devuelve la secuencia concatenada sin headers.
-
-    Parameters
-    ----------
-    file_path : str
-        Ruta al archivo FASTA.
-
-    Returns
-    -------
-    str
-        Secuencia biológica como una cadena (A, C, G, T).
+    Carga un archivo FASTA con soporte de rutas relativas
+    desde el directorio raíz del proyecto.
+    Funciona tanto en notebooks como en .py
     """
+    # Determina el directorio raíz del proyecto (sube un nivel desde notebooks/)
+    project_root = os.path.abspath("..")
+
+    # Construye la ruta absoluta
+    abs_path = os.path.join(project_root, file_path)
+
     sequence = ""
-    with open(file_path, "r") as file:
+    with open(abs_path, "r") as file:
         for line in file:
             if not line.startswith(">"):
                 sequence += line.strip()
     return sequence
 
 # Paso 2: Detectar mutaciones entre dos secuencias
-
 def find_mutations(seq1, seq2):
     """
-    Compara dos secuencias y devuelve una lista de mutaciones puntuales.
-
-    Parameters
-    ----------
-    seq1 : str
-        Secuencia de referencia.
-    seq2 : str
-        Secuencia mutada.
-
-    Returns
-    -------
-    list of tuples
-        Lista de mutaciones en el formato:
-        (posición, base original, base mutada)
-        La posición se entrega en notación 1-based.
+    Compara dos secuencias y devuelve una lista de mutaciones.
+    Cada mutación es una tupla: (posición, base original, base mutada)
     """
     mutations = []
     min_len = min(len(seq1), len(seq2))
 
     for i in range(min_len):
         if seq1[i] != seq2[i]:
-            mutations.append((i+1, seq1[i], seq2[i]))
+            mutations.append((i+1, seq1[i], seq2[i]))  # posición 1-based
 
     return mutations
 
 # Paso 3: Mostrar mutaciones en formato tabla
+
 def print_mutations_table(mutations):
     """
-    Imprime las mutaciones detectadas en formato tabla.
-
-    Parameters
-    ----------
-    mutations : list of tuples
-        Lista de mutaciones encontradas.
+    Imprime las mutaciones en formato de tabla.
     """
     if not mutations:
         print("No se encontraron mutaciones.")
@@ -75,22 +56,31 @@ def print_mutations_table(mutations):
 
 def exportar_resultados(mutations, seq1, seq2):
     """
-    Exporta los resultados completos en formato TXT.
-
-    Parameters
-    ----------
-    mutations : list of tuples
-        Lista de mutaciones.
-    seq1 : str
-        Secuencia de referencia.
-    seq2 : str
-        Secuencia mutada.
+    Exporta los resultados completos en formato TXT (universal).
+    Incluye las secuencias y la lista detallada de mutaciones.
+    Funciona tanto en notebooks como en .py y crea la carpeta output si no existe.
     """
-    filename = "data/output/Reporte_MutationFinder.txt"
 
+    # Detecta la raíz del proyecto
+    try:
+        # Para archivos .py
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    except NameError:
+        # Para notebooks
+        project_root = os.path.abspath("..")
+
+    # Carpeta de salida
+    output_dir = os.path.join(project_root, "data", "output")
+    os.makedirs(output_dir, exist_ok=True)  # crea la carpeta si no existe
+
+    # Ruta completa del archivo TXT
+    filename = os.path.join(output_dir, "Reporte_MutationFinder.txt")
+
+    # Escritura del archivo
     with open(filename, "w") as f:
         f.write("=== REPORTE DE MUTACIONES – MutationFinder ===\n")
-        f.write("Autor: Khevin Flores Olivares\n\n")
+        f.write("Autor: Khevin Flores Olivares\n")
+        f.write("Formato: TXT universal\n\n")
 
         f.write(">> Secuencia 1 (Referencia):\n")
         f.write(seq1 + "\n\n")
@@ -111,21 +101,29 @@ def exportar_resultados(mutations, seq1, seq2):
 
     print(f"\n✔ Archivo TXT generado: {filename}")
 
+#Paso 5: Exportar a un archivo CSV
 
-# Paso 5: Exportar a un archivo CSV
 def exportar_csv(mutations):
     """
-    Exporta las mutaciones en formato CSV (Excel/Sheets).
-
-    Parameters
-    ----------
-    mutations : list of tuples
-        Lista de mutaciones.
+    Exporta solo las mutaciones en formato CSV para Excel/Sheets.
+    Funciona en notebooks y .py, y crea la carpeta output si no existe.
     """
-    filename = "data/output/Mutaciones.csv"
+    # Detecta la raíz del proyecto
+    try:
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    except NameError:
+        project_root = os.path.abspath("..")  # Para notebooks
+
+    # Carpeta de salida
+    output_dir = os.path.join(project_root, "data", "output")
+    os.makedirs(output_dir, exist_ok=True)  # crea la carpeta si no existe
+
+    # Ruta completa del archivo CSV
+    filename = os.path.join(output_dir, "Mutaciones.csv")
 
     headers = ["Posición", "Original", "Mutada"]
 
+    # Escritura del archivo CSV
     with open(filename, "w", newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(headers)
@@ -135,13 +133,9 @@ def exportar_csv(mutations):
 
     print(f"✔ Archivo CSV generado: {filename}")
 
-
 # Paso 6: Menú principal
 
 def menu():
-    """
-    Muestra el menú principal del programa e interactúa con el usuario.
-    """
     seq1 = None
     seq2 = None
     mutations = []
@@ -200,12 +194,8 @@ def menu():
         else:
             print("⚠ Opción inválida. Intente nuevamente.")
 
-
-# Paso 7: Ejecución del programa
+# Paso 7: # Paso 7: Ejecución del programa
 
 if __name__ == "__main__":
     print("=== MutationFinder listo para trabajar ===")
     menu()
-
-
-

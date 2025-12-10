@@ -133,6 +133,15 @@ El archivo generado contiene:
 ✔ base original
 ✔ base mutada
 
+## Reproducibilidad
+
+Para generar el reporte de mutaciones desde los archivos FASTA en data/input:
+
+python src/mutationfinder.py
+
+El reporte se exportará automáticamente a:
+data/output/Reporte_MutationFinder.txt
+
 ## 👤 Autor
 
 Proyecto desarrollado por:
