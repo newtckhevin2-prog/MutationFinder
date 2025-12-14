@@ -6,6 +6,7 @@ Está diseñada para ser simple, reproducible y extensible, con un enfoque educa
 Este proyecto forma parte del curso BIO210B – Biología Computacional, y tiene como objetivo presentar una herramienta funcional capaz de:
 
 ✔ Cargar secuencias en formato FASTA
+
 ✔ Comparar las secuencias base a base
 ✔ Detectar diferencias en la secuencia (A, T, C, G)
 ✔ Generar una tabla de mutaciones con posición y tipo
